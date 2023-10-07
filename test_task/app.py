@@ -141,7 +141,7 @@ def graph_filtering(click, reason, fig):
     Фильтрация мульти-выбор по состояниям.
     """
     if not reason:
-        return PreventUpdate
+        raise PreventUpdate
     filtered_traces = [
         index
         for index, _ in enumerate(fig['data'])
