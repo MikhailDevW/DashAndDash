@@ -39,10 +39,10 @@ def get_period(df: DataFrame) -> set[str]:
     Функция получения времени и даты начала и заврешения периода работы.
     """
     start_period = datetime.strptime(
-        min(df['state_begin']), '%Y-%m-%d %H:%M:%S.%f'
+        df.state_begin.min(), '%Y-%m-%d %H:%M:%S.%f'
     )
     end_period = datetime.strptime(
-        max(df['state_end']), '%Y-%m-%d %H:%M:%S.%f'
+        df.state_end.max(), '%Y-%m-%d %H:%M:%S.%f'
     )
     str_start = (
         f'{start_period.time()} ({start_period.day}.{start_period.month})')
@@ -67,19 +67,15 @@ def get_pie_figure(df: DataFrame) -> go.Figure:
     """
     Построение круговой диаграммы на основе водного датафрейма (df).
     """
-    pie_figure = go.Figure(
-        data=[
-            go.Pie(
-                labels=df['reason'],
-                values=df['duration_min'],
-                hole=.2
-            )
-        ],
-    )
-    pie_figure.update_traces(
-        hoverinfo='label+percent',
-        textinfo='percent',
-        marker=dict(colors=df['color'], )
+    pie_figure = px.pie(
+        df,
+        values='duration_min',
+        names='reason',
+        color='reason',
+        color_discrete_map=dict(
+            zip(df['reason'].unique(), df['color'].unique())
+        ),
+        hole=0.2,
     )
     return pie_figure
 
